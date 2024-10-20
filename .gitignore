@@ -18,3 +18,5 @@ test-images/
 
 expo-env.d.ts
 # @end expo-cli
+
+.env
