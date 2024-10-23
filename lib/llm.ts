@@ -8,9 +8,9 @@ export default class LLM {
 
   private constructor() {
     this.client = new AzureOpenAI({
-      endpoint: Config.openAI.endpoint,
-      apiKey: Config.openAI.apiKey,
-      apiVersion: Config.openAI.apiVersion,
+      endpoint: Config.openai.endpoint,
+      apiKey: Config.openai.apiKey,
+      apiVersion: Config.openai.apiVersion,
     });
   }
 
@@ -24,7 +24,7 @@ export default class LLM {
 
   async identify(base64: string) {
     return await this.client.chat.completions.create({
-      model: Config.openAI.model,
+      model: Config.openai.model,
       messages: [
         {
           role: "system",
