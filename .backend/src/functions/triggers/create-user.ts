@@ -28,35 +28,20 @@ export async function createUserTrigger(
 
   const body = await request.json();
 
-  context.log("Validing body:", body);
-
-  const bodySchema = z.object({
+  const schema = z.object({
     objectId: z.string(),
     displayName: z.string(),
   });
 
-  const validatedBody = bodySchema.parse(body);
+  const result = schema.parse(body);
 
-  context.log("Initializing database connection");
-
-  const db = DB.getInstance();
-
-  context.log("Loading users container");
-
-  const users = await db.users();
-
-  context.log("Reading user");
-
-  const user = await users.item(validatedBody.objectId).read();
-
-  context.log("User status code:", user.statusCode);
-
-  context.log("Creating user if not exists");
+  const users = await DB.getInstance().users();
+  const user = await users.item(result.objectId).read();
 
   if (user.statusCode === 404) {
     users.items.create({
-      id: validatedBody.objectId,
-      name: validatedBody.displayName,
+      id: result.objectId,
+      name: result.displayName,
       badges: [],
       points: 0,
     });
