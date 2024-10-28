@@ -8,8 +8,8 @@ export default class DB {
 
   private constructor() {
     this.client = new CosmosClient({
-      endpoint: Config.cosmosDB.endpoint,
-      key: Config.cosmosDB.key,
+      endpoint: Config.cosmosdb.endpoint,
+      key: Config.cosmosdb.key,
     });
   }
 
