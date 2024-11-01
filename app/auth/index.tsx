@@ -36,6 +36,30 @@ export default function AuthScreen() {
               });
           }}
         />
+        <Button
+          title="Increase my points"
+          onPress={() => {
+            fetch(
+              `https://ecosort-backend-dev.azurewebsites.net/api/users/me/points`,
+              {
+                method: "PATCH",
+                headers: {
+                  Authorization: `Bearer ${auth.token}`,
+                },
+                body: JSON.stringify({
+                  points: 100,
+                }),
+              }
+            )
+              .then((response) => response.text())
+              .then((data) => {
+                setUserInfo(data);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }}
+        />
       </View>
     );
   } else {

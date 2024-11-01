@@ -25,7 +25,10 @@ type C =
 const AuthContext = createContext<C | null>(null);
 
 function AuthProvider(props: { children: ReactNode }) {
-  const redirectUri = makeRedirectUri({ path: "auth" });
+  // const redirectUri = makeRedirectUri({ scheme: "myapp", path: "auth" });
+  const redirectUri = "exp://127.0.0.1:8081/--/auth"; // TODO: uncomment the above line and remove this line for production
+
+  console.log(redirectUri);
 
   const [code, setCode] = useState<AuthorizeResponse | null>(null);
   const [token, setToken] = useState<TokenResponse | null>(null);
@@ -72,14 +75,14 @@ function AuthProvider(props: { children: ReactNode }) {
   }, [code]);
 
   const refresh = useCallback(async () => {
-    if (!code || !token) {
+    if (!token) {
       return;
     }
 
     const result = await AADB2C.getInstance().token(
-      code.code,
-      redirectUri,
-      code.codeVerifier,
+      "",
+      "",
+      "",
       token.refresh_token
     );
 
@@ -88,7 +91,7 @@ function AuthProvider(props: { children: ReactNode }) {
     } else {
       setToken(result.value);
     }
-  }, []);
+  }, [token]);
 
   return (
     <AuthContext.Provider

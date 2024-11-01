@@ -86,6 +86,9 @@ importers:
       react-native-web:
         specifier: ~0.19.10
         version: 0.19.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      uri-scheme:
+        specifier: ^1.2.2
+        version: 1.2.2
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -4664,6 +4667,10 @@ packages:
     hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
+
+  uri-scheme@1.2.2:
+    resolution: {integrity: sha512-+7DBZdFaTvX3NY53CJnKBMgkrVsZBINAJvGYYVOaVkLEhI8tfC+2tmV+D9SN4E0/t2bTyk9oKPP9j4n7ElYR0A==}
+    hasBin: true
 
   url-join@4.0.0:
     resolution: {integrity: sha512-EGXjXJZhIHiQMK2pQukuFcL303nskqIRzWvPvV5O8miOfwoUb9G+a/Cld60kUyeaybEI94wvVClT10DtfeAExA==}
@@ -10805,6 +10812,8 @@ snapshots:
       browserslist: 4.24.0
       escalade: 3.2.0
       picocolors: 1.1.0
+
+  uri-scheme@1.2.2: {}
 
   url-join@4.0.0: {}
 
