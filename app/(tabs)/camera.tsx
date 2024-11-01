@@ -1,5 +1,5 @@
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useCallback, useRef, useState } from "react";
 
@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Image } from "expo-image";
 import LLM from "@/lib/llm";
 import { useIsFocused } from "@react-navigation/native";
+import CameraButton from "../../components/cameraButton";
 
 export default function CameraScreen() {
   const isFocused = useIsFocused();
@@ -16,6 +17,7 @@ export default function CameraScreen() {
   const [camerataking, setCameraTaking] = useState<boolean>(false);
   const [pictureUri, setPictureUri] = useState<string | null>(null);
   const [instructions, setInstructions] = useState<string[] | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const takePictureAsync = useCallback(async () => {
     if (!cameraRef.current) {
@@ -43,11 +45,19 @@ export default function CameraScreen() {
         return;
       }
 
-      const llm = LLM.getInstance();
-      const response = await llm.identify(result.base64);
+      setLoading(true);
+      try {
+        const llm = LLM.getInstance();
+        const response = await llm.identify(result.base64);
+        setPictureUri(result.uri);
+        setInstructions(response.choices.map((c) => c.message.content!));
+      } catch (error) {
+        console.error("Error while identifying object with LLM");
+      } finally {
+        setLoading(false);
+      }
+      
 
-      setPictureUri(result.uri);
-      setInstructions(response.choices.map((c) => c.message.content!));
       expand();
     } catch (e) {
       console.error(e);
@@ -97,11 +107,12 @@ export default function CameraScreen() {
           style={{ flex: 1, alignItems: "center", justifyContent: "flex-end" }}
           onCameraReady={() => setCameraReady(true)}
         >
-          <TouchableOpacity style={{ margin: 48 }} onPress={takePictureAsync}>
-            <Text style={{ color: "white", fontSize: 24, fontWeight: "bold" }}>
-              Take a picture
-            </Text>
-          </TouchableOpacity>
+          {loading ? 
+            (<ActivityIndicator size="large" color="#4CAF50" />) : 
+            (<TouchableOpacity style={{ margin: 48 }} onPress={takePictureAsync}>
+              <CameraButton onPress={takePictureAsync} iconSize={30} iconColor="#66BB6A" />
+            </TouchableOpacity>)
+          }
         </CameraView>
       )}
       <BottomSheet
