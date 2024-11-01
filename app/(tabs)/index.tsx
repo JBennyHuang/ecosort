@@ -51,7 +51,11 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
-      <Link href={"/auth"}>Go to Auth</Link>
+      <ThemedView>
+        <Link href={"/auth"}>
+          <ThemedText>Go to Auth</ThemedText>
+        </Link>
+      </ThemedView>
     </ParallaxScrollView>
   );
 }

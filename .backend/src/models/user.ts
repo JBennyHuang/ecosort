@@ -1,4 +1,4 @@
-import { None, Option, Some } from "../lib/util";
+import { Err, None, Ok, Option, Result, Some } from "../lib/util";
 
 import DB from "../lib/db";
 import { z } from "zod";
@@ -36,5 +36,19 @@ export default class User implements IUser {
     }
 
     return Some(new User(user.resource));
+  }
+
+  async increasePoints(points: number): Promise<Result<{}>> {
+    const users = await DB.getInstance().users();
+
+    try {
+      await users.item(this.id).patch({
+        operations: [{ op: "incr", path: "/points", value: points }],
+      });
+
+      return Ok({});
+    } catch (error) {
+      return Err(error instanceof Error ? error : new Error("Unknown error"));
+    }
   }
 }
