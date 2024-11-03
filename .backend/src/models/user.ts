@@ -1,7 +1,12 @@
-import { None, Option, Some } from "../lib/util";
+import { Err, None, Ok, Option, Result, Some } from "../lib/util";
 
 import DB from "../lib/db";
 import { z } from "zod";
+
+interface ReturnObj {
+  status: number;
+  message: string;
+}
 
 const schema = z.object({
   id: z.string(),
@@ -36,5 +41,19 @@ export default class User implements IUser {
     }
 
     return Some(new User(user.resource));
+  }
+
+  async incrementPoints(value: number): Promise<Result<{}>> {
+    const users = await DB.getInstance().users();
+
+    try {
+      await users.item(this.id).patch({
+        operations: [{ op: "incr", path: "/points", value: value }],
+      });
+
+      return Ok({});
+    } catch (error: any) {
+      return Err(error instanceof Error ? error : new Error("Unknown error"));
+    }
   }
 }

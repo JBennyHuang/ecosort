@@ -1,12 +1,36 @@
-import { Image, Platform, StyleSheet } from "react-native";
+import { Button, Image, Platform, StyleSheet } from "react-native";
 
 import { HelloWave } from "@/components/HelloWave";
 import { Link } from "expo-router";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function HomeScreen() {
+  const auth = useAuth();
+  // http://localhost:7071/api/points/increment
+  // http://ecosort-backend-dev.azurewebsites.net/api/points/increment
+  const handleClick = async () => {
+    if (auth.isSignedIn) {
+      console.log(auth.token)
+      try{
+        await fetch("http://ecosort-backend-dev.azurewebsites.net/api/points/increment", {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }).then( (result: any) => {
+          console.log(result)
+        })
+      } catch (e: any) {
+        console.log("500 : " + e)
+      }
+
+    } else {
+      console.log("User not signed in")
+    }
+  }
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -52,6 +76,11 @@ export default function HomeScreen() {
         </ThemedText>
       </ThemedView>
       <Link href={"/auth"}>Go to Auth</Link>
+      <Button 
+        title="Click Me" 
+        onPress={handleClick} 
+        color="#841584" 
+      />
     </ParallaxScrollView>
   );
 }
